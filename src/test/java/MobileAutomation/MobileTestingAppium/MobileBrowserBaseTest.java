@@ -1,0 +1,60 @@
+package MobileAutomation.MobileTestingAppium;
+
+import com.google.common.collect.ImmutableMap;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.options.UiAutomator2Options;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.appium.java_client.service.local.flags.GeneralServerFlag;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebElement;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.time.Duration;
+
+public class MobileBrowserBaseTest {
+
+    public AppiumServiceBuilder builder;
+    public AppiumDriverLocalService service;
+    public AndroidDriver driver;
+
+    @BeforeTest
+    public void configurationMethod() throws URISyntaxException, MalformedURLException {
+
+        builder = new AppiumServiceBuilder();
+        builder.withIPAddress("127.0.0.1");
+        builder.usingPort(4724);
+        builder.withAppiumJS(new File("//usr//local//Cellar//node//21.1.0//lib//node_modules//appium//build//lib//main.js"));
+        builder.withArgument(GeneralServerFlag.LOG_LEVEL, "warn");
+        service = AppiumDriverLocalService.buildService(builder);
+        service.start();
+
+        UiAutomator2Options options = new UiAutomator2Options();
+        options.setDeviceName("IreneEmulator");
+        options.setApp("//Users//irenegeorge//Downloads//resources//General-Store.apk");
+        options.setChromedriverExecutable("//Users//irenegeorge//Downloads//chromedriver_mac64 new");
+        options.setCapability("browserName","Chrome");
+
+        final String url = "http://127.0.0.1:4723";
+        URL endpoint = new URI(url).toURL();
+        driver = new AndroidDriver(endpoint, options);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+    }
+
+    public Double convertStringToNumberAndFormat(String originalValue, int startIndex) {
+        return Double.parseDouble(originalValue.substring(startIndex));
+    }
+
+    @AfterTest
+    public void tearDown() {
+          driver.quit();
+        service.stop();
+    }
+}
