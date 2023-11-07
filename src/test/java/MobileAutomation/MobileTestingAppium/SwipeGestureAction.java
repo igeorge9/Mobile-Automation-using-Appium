@@ -16,6 +16,7 @@ public class SwipeGestureAction extends BaseTest {
         WebElement firstImage = driver.findElement(By.xpath("//android.widget.ImageView[1]"));
         Assert.assertEquals(firstImage.getAttribute("focusable"), "true"); // The focusable value of first image will be true
 //      Swipe and move the focus to next image
+        
         swipeAction(firstImage, "left");
         Assert.assertEquals(firstImage.getAttribute("focusable"), "false");  // The focus moves to second image and focusable value of first image will be false
 
